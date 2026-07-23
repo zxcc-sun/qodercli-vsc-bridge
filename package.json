@@ -1,0 +1,47 @@
+{
+  "name": "qodercli-vsc-bridge",
+  "displayName": "QoderCLI VSCodeIDE Bridge",
+  "description": "Automatically provides IDE context to qodercli in the VSCode integrated terminal, based on an MCP bridge and a UserPromptSubmit hook.",
+  "version": "0.0.1",
+  "publisher": "zxcc-sun",
+  "license": "Unlicense",
+  "repository": { "type": "git", "url": "https://github.com/zxcc-sun/qodercli-vsc-bridge" },
+  "engines": { "vscode": "^1.90.0" },
+  "categories": ["Other"],
+  "main": "./out/extension.js",
+  "activationEvents": ["onStartupFinished"],
+  "contributes": {
+    "commands": [
+      {
+        "command": "qodercli-vsc-bridge.enable",
+        "title": "QoderCLI Bridge: Enable (write qodercli config)"
+      },
+      {
+        "command": "qodercli-vsc-bridge.disable",
+        "title": "QoderCLI Bridge: Disable (remove config)"
+      },
+      {
+        "command": "qodercli-vsc-bridge.clean",
+        "title": "QoderCLI Bridge: Clean (remove config and released scripts)"
+      },
+      {
+        "command": "qodercli-vsc-bridge.status",
+        "title": "QoderCLI Bridge: Status"
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "test": "vitest run",
+    "vscode:prepublish": "npm run compile",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.90.0",
+    "typescript": "^5.4.0",
+    "vitest": "^2.1.0",
+    "@vscode/vsce": "^2.30.0"
+  }
+}
