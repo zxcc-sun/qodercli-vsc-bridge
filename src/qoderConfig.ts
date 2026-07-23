@@ -1,5 +1,7 @@
 import * as fs from 'node:fs';
-import { MCP_SERVER_KEY, HOOK_MARK, SCRIPT_HOOK } from './constants';
+import * as path from 'node:path';
+
+import {HOOK_MARK, MCP_SERVER_KEY, SCRIPT_HOOK} from './constants';
 
 export interface BridgeConfig {
   node: string;
@@ -23,14 +25,9 @@ interface Settings {
   [k: string]: unknown;
 }
 
-function readOrThrow(settingsPath: string): Settings {
-  if (!fs.existsSync(settingsPath)) {
-    throw new QoderConfigError(
-        'NOT_INSTALLED',
-        'qodercli not detected: ~/.qoder/settings.json does not exist');
-  }
-  const text = fs.readFileSync(settingsPath, 'utf8');
-  try { return JSON.parse(text) as Settings;
+function parseSettings(text: string): Settings {
+  try {
+    return JSON.parse(text) as Settings;
   } catch {
     throw new QoderConfigError(
         'INVALID_JSON',
@@ -38,12 +35,34 @@ function readOrThrow(settingsPath: string): Settings {
   }
 }
 
+function readOrThrow(settingsPath: string): Settings {
+  if (!fs.existsSync(settingsPath)) {
+    throw new QoderConfigError(
+        'NOT_INSTALLED',
+        'qodercli not detected: ~/.qoder/settings.json does not exist');
+  }
+  return parseSettings(fs.readFileSync(settingsPath, 'utf8'));
+}
+
+// qodercli 已安装但从未运行时 settings.json 尚未生成；
+// 此处不视为“未安装”，返回空配置，稍后由 writeAtomic 主动创建文件。
+function readOrInit(settingsPath: string): Settings {
+  if (!fs.existsSync(settingsPath)) {
+    return {};
+  }
+  return parseSettings(fs.readFileSync(settingsPath, 'utf8'));
+}
+
 function backupOnce(settingsPath: string): void {
+  if (!fs.existsSync(settingsPath)) {
+    return;
+  }  // 新建文件时没有原内容可备份
   const bak = settingsPath + '.bak';
   if (!fs.existsSync(bak)) { fs.copyFileSync(settingsPath, bak); }
 }
 
 function writeAtomic(settingsPath: string, obj: unknown): void {
+  fs.mkdirSync(path.dirname(settingsPath), {recursive: true});
   const tmp = settingsPath + '.tmp';
   fs.writeFileSync(tmp, JSON.stringify(obj, null, 2));
   fs.renameSync(tmp, settingsPath);
@@ -58,7 +77,7 @@ function isOurHookGroup(group: HookGroup): boolean {
 function quote(p: string): string { return `"${p}"`; }
 
 export function enable(settingsPath: string, cfg: BridgeConfig): void {
-  const settings = readOrThrow(settingsPath);
+  const settings = readOrInit(settingsPath);
   backupOnce(settingsPath);
 
   settings.mcpServers = settings.mcpServers ?? {};

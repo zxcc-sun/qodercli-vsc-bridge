@@ -61,13 +61,31 @@ describe('enable', () => {
     expect(read().mcpServers.vscode.env).toBeUndefined();
   });
 
-  it('文件不存在 → 抛 NOT_INSTALLED', () => {
-    expect(() => enable(settingsPath, cfg)).toThrowError(QoderConfigError);
-    try { enable(settingsPath, cfg); } catch (e: any) { expect(e.code).toBe('NOT_INSTALLED'); }
+  it('文件不存在（qodercli 从未运行）→ 主动创建并写入配置，不生成 .bak', () => {
+    expect(fs.existsSync(settingsPath)).toBe(false);
+    enable(settingsPath, cfg);
+    const s = read();
+    expect(s.mcpServers.vscode).toEqual({
+      command: '/x/node',
+      args: [cfg.bridgeScript],
+      env: {ELECTRON_RUN_AS_NODE: '1'}
+    });
+    expect(s.hooks.UserPromptSubmit[0].hooks[0].command)
+        .toContain('inject-ide-context.mjs');
+    expect(fs.existsSync(settingsPath + '.bak')).toBe(false);
+  });
+
+  it('父目录不存在 → 自动创建目录并写入', () => {
+    const nested = path.join(tmp, 'a', 'b', 'settings.json');
+    enable(nested, cfg);
+    expect(fs.existsSync(nested)).toBe(true);
+    expect(JSON.parse(fs.readFileSync(nested, 'utf8')).mcpServers.vscode)
+        .toBeDefined();
   });
 
   it('非法 JSON → 抛 INVALID_JSON 且不改文件', () => {
     fs.writeFileSync(settingsPath, '{ not json');
+    expect(() => enable(settingsPath, cfg)).toThrowError(QoderConfigError);
     try { enable(settingsPath, cfg); } catch (e: any) { expect(e.code).toBe('INVALID_JSON'); }
     expect(fs.readFileSync(settingsPath, 'utf8')).toBe('{ not json');
   });

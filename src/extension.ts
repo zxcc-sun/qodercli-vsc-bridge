@@ -65,11 +65,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       });
     } catch (e) {
       const code = (e as qoder.QoderConfigError).code;
-      if (code === 'NOT_INSTALLED') {
-        status.hide();
-        if (interactive) { vscode.window.showWarningMessage('qodercli not detected (~/.qoder/settings.json does not exist); please install qodercli first.'); }
-        return;
-      }
       if (code === 'INVALID_JSON') {
         vscode.window.showErrorMessage('~/.qoder/settings.json is not valid JSON; changes were skipped. Please fix it and retry.');
         return;
