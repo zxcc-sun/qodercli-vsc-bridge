@@ -1,13 +1,14 @@
 {
   "name": "qodercli-vsc-bridge",
-  "displayName": "QoderCLI VSCodeIDE Bridge",
-  "description": "Automatically provides IDE context to qodercli in the VSCode integrated terminal, based on an MCP bridge and a UserPromptSubmit hook.",
+  "displayName": "QoderCLI Bridge for VS Code",
+  "description": "Unofficial bridge that provides IDE context to qodercli in the VS Code integrated terminal, via an MCP bridge and a UserPromptSubmit hook. Not affiliated with or endorsed by Microsoft or Qoder.",
   "version": "0.0.1",
   "publisher": "zxcc-sun",
   "license": "Unlicense",
   "repository": { "type": "git", "url": "https://github.com/zxcc-sun/qodercli-vsc-bridge" },
   "engines": { "vscode": "^1.90.0" },
   "categories": ["Other"],
+  "icon": "assets/icon.png",
   "main": "./out/extension.js",
   "activationEvents": ["onStartupFinished"],
   "contributes": {

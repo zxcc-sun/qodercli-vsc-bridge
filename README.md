@@ -1,6 +1,8 @@
-# QoderCLI VSCodeIDE Bridge
+# QoderCLI Bridge for VS Code
 
 > 🌏 **语言 / Language:** 中文（下方） · [English](#english)
+
+> ⚠️ **非官方**：本扩展为第三方社区工具，与 Microsoft、Qoder 无隶属或背书关系；它依赖 GitHub Copilot 未公开的本地接口，可能随上游更新而失效。
 
 在 **VSCode 内置终端**里为 [`qodercli`](https://docs.qoder.com/en/cli/quick-start) 自动接入 IDE 上下文（当前文件路径 / 选中文本）。
 
@@ -42,9 +44,11 @@
 
 <a id="english"></a>
 
-# QoderCLI VSCodeIDE Bridge (English)
+# QoderCLI Bridge for VS Code (English)
 
-> 🌏 **语言 / Language:** [中文](#qodercli-vscodeide-bridge) · English (below)
+> 🌏 **语言 / Language:** [中文](#qodercli-bridge-for-vs-code) · English (below)
+
+> ⚠️ **Unofficial**: A third-party community tool, not affiliated with or endorsed by Microsoft or Qoder; it relies on GitHub Copilot's undocumented local interface and may break with upstream updates.
 
 Automatically wire IDE context (current file path / selected text) into [`qodercli`](https://docs.qoder.com/en/cli/quick-start) inside the **VSCode integrated terminal** — no manual config, no separate Node install.
 
